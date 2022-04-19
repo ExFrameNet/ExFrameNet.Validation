@@ -1,10 +1,22 @@
-﻿namespace ExFrameNet.Validation;
-public interface IValidator<T>
+﻿using System.ComponentModel;
+
+
+namespace ExFrameNet.Validation
 {
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public interface IValidator
+    {
+        bool BreaksValidationIfFaild { get; }
 
-    bool Validate(T value);
+        bool Validate(object? value);
 
-    string DefaultMessage { get; }
+        string DefaultMessage { get; }
 
-    uint DefaultErrorCode { get; }
+        uint DefaultErrorCode { get; }
+    }
+
+    public interface IValidator<T> : IValidator
+    {
+        bool Validate(T? value);
+    }
 }

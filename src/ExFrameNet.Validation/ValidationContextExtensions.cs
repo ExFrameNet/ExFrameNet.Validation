@@ -5,7 +5,12 @@
         public static ValidationContext<T,TProperty> AddValidator<T,TProperty>(this ValidationContext<T,TProperty> ctx, IValidator<TProperty> validator)
             where T : class
         {
-            ctx.AddValidator(validator);
+            ctx.Validators.Add(validator);
+            ctx.ValidatorAttachments[validator] = new ValidatorAttachments(validator.DefaultMessage, validator.DefaultErrorCode)
+            {
+                Message = validator.DefaultMessage,
+                ErrorCode = validator.DefaultErrorCode
+            };
             return ctx;
         }
 
@@ -16,6 +21,23 @@
                 throw new InvalidOperationException("Add Validator first");
 
             ctx.ValidatorAttachments[ctx.LastValidator].Message = message;
+            return ctx;
+        }
+
+        public static ValidationContext<T,TProperty> WithParameter<T,TProperty,TParameter>(this ValidationContext<T,TProperty>ctx , TParameter parameter)
+            where T : class
+        {
+            if(parameter is null)
+                throw new ArgumentNullException(nameof(parameter));
+
+            if (ctx.LastValidator is null)
+                throw new InvalidOperationException("Add Validator first");
+
+            if (ctx.LastValidator is not IParameterizedValidator<TProperty, TParameter> validator)
+                throw new InvalidOperationException("Validator didn't except a parameter or this type of Parameter");
+
+            ctx.ValidatorParameters[validator] = parameter;
+
             return ctx;
         }
     }

@@ -2,12 +2,13 @@
 
 namespace ExFrameNet.Validation.Validators
 {
-    public class NotEmptyValidator<T> : IValidator<T>
+    public class NotEmptyValidator<T> : AbstractValidator<T>
     {
-        public string DefaultMessage => "Value can't be empty";
-        public uint DefaultErrorCode { get; }
+        public override string DefaultMessage => "Value can't be empty";
+        public override uint DefaultErrorCode { get; }
+        public override bool BreaksValidationIfFaild => false;
 
-        public bool Validate(T value)
+        public override bool Validate(T? value)
         {
             switch (value)
             {

@@ -1,11 +1,13 @@
 ﻿namespace ExFrameNet.Validation.Validators
 {
-    public class NotNullValidator<T> : IValidator<T>
+    public class NotNullValidator<T> : AbstractValidator<T>
     {
-        public string DefaultMessage => "Value can't be null";
-        public uint DefaultErrorCode => 0;
+        public override string DefaultMessage => "Value can't be null";
+        public override uint DefaultErrorCode => 0;
 
-        public bool Validate(T value)
+        public override bool BreaksValidationIfFaild => false;
+
+        public override bool Validate(T? value)
         {
             return value is not null;
         }

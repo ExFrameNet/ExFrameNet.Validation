@@ -6,9 +6,12 @@ namespace ExFrameNet.Validation
         where T : class
     {
 
-        internal ValidationPropertyContext(PropertyContext<T, TProperty> ctx)
+        public ValidationResult ValidationResult { get; set; }
+
+        internal ValidationPropertyContext(PropertyContext<T, TProperty> ctx, ValidationResult result)
             : base(ctx)
         {
+            ValidationResult = result;
         }
 
     }

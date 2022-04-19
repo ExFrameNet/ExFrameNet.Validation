@@ -1,50 +1,62 @@
 ﻿using ExFrameNet.Utils.Property;
+using System.ComponentModel.DataAnnotations;
 
 namespace ExFrameNet.Validation
 {
     public class ValidationContext<T, TProperty>
         where T : class
     {
-        private List<IValidator<TProperty>> _validators { get; }
-        internal IValidator<TProperty>? LastValidator => _validators.LastOrDefault();
-        internal Dictionary<IValidator<TProperty>, ValidatorAttachments> ValidatorAttachments { get; }
+        internal Func<T, TProperty?> PropertyReader { get; }
+        internal T ClassInstance { get; }
+        internal List<IValidator> Validators { get; }
+        internal IValidator? LastValidator => Validators.LastOrDefault();
+        internal Dictionary<IValidator, ValidatorAttachments> ValidatorAttachments { get; }
+        internal Dictionary<IParameterizedValidator<TProperty>, object> ValidatorParameters { get; }
 
-        internal ValidationContext()
+        internal ValidationContext(Func<T, TProperty> propertyReader, T classInstance)
         {
-            _validators = new List<IValidator<TProperty>>();
-            ValidatorAttachments = new Dictionary<IValidator<TProperty>, ValidatorAttachments>();
+            Validators = new List<IValidator>();
+            ValidatorAttachments = new Dictionary<IValidator, ValidatorAttachments>();
+            ValidatorParameters = new Dictionary<IParameterizedValidator<TProperty>, object>();
+            PropertyReader = propertyReader;
+            ClassInstance = classInstance;
         }
 
-        internal ValidationResult Validate(ValidationOptions options, PropertyContext<T,TProperty> ctx)
+        internal ValidationContext(IEnumerable<IValidator> validators, Func<T, TProperty?> propertyReader, T classInstance)
+        {
+            Validators = new List<IValidator>(validators);
+            ValidatorAttachments = new Dictionary<IValidator, ValidatorAttachments>();
+            ValidatorParameters = new Dictionary<IParameterizedValidator<TProperty>, object>();
+            PropertyReader = propertyReader;
+            ClassInstance = classInstance;
+        }
+
+
+        internal ValidationResult Validate(ValidationOptions options, string propertyName)
         {
             var errors = new List<ValidationError>();
-            foreach (var validator in _validators)
+            foreach (var validator in Validators)
             {
-                var isValid = validator.Validate(ctx.Value);
-                
+                var attempted = PropertyReader(ClassInstance);
+                bool isValid = false;
+                if (validator is IParameterizedValidator<TProperty> pvalidator && ValidatorParameters.TryGetValue(pvalidator, out var param))
+                    isValid = pvalidator.Validate(attempted, param);
+                else
+                    isValid = validator.Validate(attempted);
+
                 if (isValid)
                     continue;
 
                 var attachments = ValidatorAttachments[validator];
-                var error = new ValidationError(attachments.Message, attachments.ErrorCode, ctx.Value,
+                var error = new ValidationError(attachments.Message, attachments.ErrorCode, attempted,
                     attachments.Severity, attachments.CustomError);
                 errors.Add(error);
-                if (options.BreakAfterFirstFail) 
+                if (options.BreakAfterFirstFail || validator.BreaksValidationIfFaild)
                     break;
 
             }
 
-            return new ValidationResult(ctx.Name, errors);
-        }
-        
-        internal void AddValidator(IValidator<TProperty> validator)
-        {
-            _validators.Add(validator);
-            ValidatorAttachments[validator] = new ValidatorAttachments()
-            {
-                Message = validator.DefaultMessage,
-                ErrorCode = validator.DefaultErrorCode
-            };
+            return new ValidationResult(propertyName, errors);
         }
     }
 }

@@ -15,12 +15,12 @@ namespace ExFrameNet.Validation
                 options = ValidationOptions.Default;
 
 
-            var valCtx = new ValidationContext<T, TProperty>();
+            var valCtx = new ValidationContext<T, TProperty>(ctx.PropertyReader, ctx.ClassInstance);
             validation(valCtx);
-            var result = valCtx.Validate(options, ctx);
-            AfterValidation(ctx, result);
+            var result = valCtx.Validate(options, ctx.Name);
+            IValiudatbaleActions(ctx, result);
 
-            return new ValidationPropertyContext<T, TProperty>(ctx);
+            return new ValidationPropertyContext<T, TProperty>(ctx, result);
         }
 
         public static ValidationPropertyChangedContext<T, TProperty> Validate<T, TProperty>
@@ -30,14 +30,14 @@ namespace ExFrameNet.Validation
             if (options is null)
                 options = ValidationOptions.Default;
 
-            var valCtx = new ValidationContext<T, TProperty>();
+            var valCtx = new ValidationContext<T, TProperty>(ctx.PropertyReader, ctx.ClassInstance);
             validation(valCtx);
             var newCtx = new ValidationPropertyChangedContext<T, TProperty>(ctx);
 
             ctx.Subscribe(x =>
             {
-                var result = valCtx.Validate(options, ctx);
-                AfterValidation(ctx,result);
+                var result = valCtx.Validate(options, ctx.Name);
+                IValiudatbaleActions(ctx,result);
                 foreach (var action in newCtx.AfterValidationActions)
                 {
                     action(result);
@@ -47,7 +47,7 @@ namespace ExFrameNet.Validation
             return newCtx;
         }
 
-        private static void AfterValidation<T,TProperty>(PropertyContext<T,TProperty> ctx, ValidationResult result)
+        private static void IValiudatbaleActions<T,TProperty>(PropertyContext<T,TProperty> ctx, ValidationResult result)
             where T :class, IValidatable
         {
             if (result.IsValid)
