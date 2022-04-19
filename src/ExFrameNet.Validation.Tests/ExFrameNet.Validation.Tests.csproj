@@ -24,4 +24,10 @@
     <ProjectReference Include="..\ExFrameNet.Validation\ExFrameNet.Validation.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="ExFrameNet.Utils">
+      <HintPath>..\..\..\Utils\src\ExFrameNet.Utils\bin\Debug\net6.0\ExFrameNet.Utils.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>
