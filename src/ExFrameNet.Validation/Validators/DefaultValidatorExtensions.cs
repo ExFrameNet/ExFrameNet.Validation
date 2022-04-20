@@ -1,4 +1,6 @@
-﻿namespace ExFrameNet.Validation.Validators
+﻿using ExFrameNet.Validation.Tests.Validators;
+
+namespace ExFrameNet.Validation.Validators
 {
     public static class DefaultValidatorExtensions
     {
@@ -33,6 +35,15 @@
             TCasted? transform(T c) => cast(ctx.PropertyReader(c));
 
             return new ValidationContext<T, TCasted>(ctx.Validators, transform, ctx.ClassInstance);
+        }
+
+        public static ValidationContext<T,string> ShouldNotContain<T>(this ValidationContext<T,string> ctx, string substring)
+            where T : class
+        {
+            ctx.AddValidator(new ContainsNotValidator())
+                .WithParameter(substring);
+
+            return ctx;
         }
     }
 }
