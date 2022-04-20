@@ -1,15 +1,26 @@
 ﻿namespace ExFrameNet.Validation.Validators
 {
-    public class CastingFunctionValidator<TFrom, TTo> : AbstractParameterizedValidator<TFrom, Func<TFrom?, TTo>>
+    public class CastingFunctionValidator<TFrom, TTo> : AbstractValidator<TFrom>
     {
+
+        private readonly Func<TFrom, TTo> _converter;
+
+        public CastingFunctionValidator(Func<TFrom, TTo> converter)
+        {
+            _converter = converter;
+        }
+
         public override bool BreaksValidationIfFaild => true;
         public override string DefaultMessage => $"Can't cast to {typeof(TTo)}";
 
-        public override bool Validate(TFrom? value, Func<TFrom?, TTo> parameter)
+
+
+
+        public override bool Validate(TFrom value)
         {
             try
             {
-                parameter(value);
+                _converter(value);
             }
             catch 
             {

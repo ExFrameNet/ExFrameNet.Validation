@@ -27,12 +27,11 @@ namespace ExFrameNet.Validation.Validators
             return new ValidationContext<T, TCasted>(ctx.Validators, transform , ctx.ClassInstance);
         }
 
-        public static ValidationContext<T, TCasted> Cast<T, TProperty, TCasted>(this ValidationContext<T, TProperty> ctx, Func<TProperty?, TCasted> cast)
+        public static ValidationContext<T, TCasted> Cast<T, TProperty, TCasted>(this ValidationContext<T, TProperty> ctx, Func<TProperty, TCasted> cast)
             where T : class
         {
-            ctx.AddValidator(new CastingFunctionValidator<TProperty, TCasted>())
-                .WithParameter(cast);
-            TCasted? transform(T c) => cast(ctx.PropertyReader(c));
+            ctx.AddValidator(new CastingFunctionValidator<TProperty, TCasted>(cast));
+            TCasted transform(T c) => cast(ctx.PropertyReader(c));
 
             return new ValidationContext<T, TCasted>(ctx.Validators, transform, ctx.ClassInstance);
         }
@@ -40,8 +39,7 @@ namespace ExFrameNet.Validation.Validators
         public static ValidationContext<T,string> ShouldNotContain<T>(this ValidationContext<T,string> ctx, string substring)
             where T : class
         {
-            ctx.AddValidator(new ContainsNotValidator())
-                .WithParameter(substring);
+            ctx.AddValidator(new ContainsNotValidator(substring));
 
             return ctx;
         }
@@ -49,16 +47,14 @@ namespace ExFrameNet.Validation.Validators
         public static ValidationContext<T,string> Lenght<T>(this ValidationContext<T,string> ctx, uint min, uint max)
             where T : class
         {
-            ctx.AddValidator(new LengthValidator())
-                .WithParameter((min, max));
+            ctx.AddValidator(new LengthValidator(min, max));
             return ctx;
         }
 
         public static ValidationContext<T,string> MinLength<T>(this ValidationContext<T,string> ctx, uint min)
             where T : class
         {
-            ctx.AddValidator(new LengthValidator())
-                .WithParameter((min, uint.MaxValue));
+            ctx.AddValidator(new LengthValidator(min, uint.MaxValue));
                
             return ctx;
         }
@@ -66,8 +62,7 @@ namespace ExFrameNet.Validation.Validators
         public static ValidationContext<T, string> MaxLength<T>(this ValidationContext<T, string> ctx, uint max)
             where T : class
         {
-            ctx.AddValidator(new LengthValidator())
-                .WithParameter((uint.MinValue, max));
+            ctx.AddValidator(new LengthValidator(uint.MinValue, max));
 
             return ctx;
         }

@@ -24,23 +24,6 @@
             return ctx;
         }
 
-        public static ValidationContext<T,TProperty> WithParameter<T,TProperty,TParameter>(this ValidationContext<T,TProperty>ctx , TParameter parameter)
-            where T : class
-        {
-            if(parameter is null)
-                throw new ArgumentNullException(nameof(parameter));
-
-            if (ctx.LastValidator is null)
-                throw new InvalidOperationException("Validator must be addded first");
-
-            if (ctx.LastValidator is not IParameterizedValidator<TProperty, TParameter> validator)
-                throw new InvalidOperationException("Validator didn't except a parameter or this type of Parameter");
-
-            ctx.ValidatorParameters[validator] = parameter;
-
-            return ctx;
-        }
-
         public static ValidationContext<T,TProperty> AddMessageParameter<T,TProperty>(this ValidationContext<T,TProperty> ctx, string key, object? value)
             where T : class
         {

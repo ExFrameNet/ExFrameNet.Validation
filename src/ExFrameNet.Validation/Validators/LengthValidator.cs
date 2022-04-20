@@ -1,18 +1,29 @@
 ﻿namespace ExFrameNet.Validation.Validators
 {
-    public class LengthValidator : AbstractParameterizedValidator<string, (uint min, uint max)>
+    public class LengthValidator : AbstractValidator<string>
     {
+        private readonly uint _min;
+        private readonly uint _max;
+
         public override bool BreaksValidationIfFaild { get; }
         public override string DefaultMessage => "Lenght must be inbetween {min} and {max}";
 
-        public override bool Validate(string? value, (uint min,uint max) parameter)
+
+        public LengthValidator(uint min, uint max)
         {
-            MessageParameters.Add("min", parameter.min);
-            MessageParameters.Add("max", parameter.max);
+            _min = min;
+            _max = max;
+        }
+
+        
+        public override bool Validate(string value)
+        {
+            MessageParameters.Add("min", _min);
+            MessageParameters.Add("max", _max);
             if (value is null)
                 return true;
 
-            return value.Length >= parameter.min && value.Length <= parameter.max;
+            return value.Length >= _min && value.Length <= _max;
         }
     }
 }
