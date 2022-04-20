@@ -24,7 +24,7 @@ namespace ExFrameNet.Validation.Validators
         {
             ctx.AddValidator(new CastingValidator<TProperty, TCasted>());
             TCasted transform(TProperty p) => (TCasted)Convert.ChangeType(p, typeof(TCasted));
-            var newCtx = new ValidationContext<T, TCasted>(ctx.Property.Transform(transform));
+            var newCtx = new ValidationContext<T, TCasted>(ctx.Property.Transform(transform), ctx.ValidationOptions);
             ctx.InnerContext = newCtx;
 
             return newCtx;
@@ -34,7 +34,7 @@ namespace ExFrameNet.Validation.Validators
             where T : class
         {
             ctx.AddValidator(new CastingValidator<TProperty, TCasted>(cast));
-            return new ValidationContext<T, TCasted>(ctx.Property.Transform(cast));
+            return new ValidationContext<T, TCasted>(ctx.Property.Transform(cast), ctx.ValidationOptions);
         }
 
         public static ValidationContext<T,string> ShouldNotContain<T>(this ValidationContext<T,string> ctx, string substring)

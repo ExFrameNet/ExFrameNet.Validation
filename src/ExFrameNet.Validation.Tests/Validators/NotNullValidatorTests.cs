@@ -23,7 +23,7 @@ namespace ExFrameNet.Validation.Tests.Validators
                 .Validate(x => x.IsNotNull());
 
             //Assert
-            sut.ValidationResult.IsValid.Should().Be(false);
+            sut.Validate().IsValid.Should().Be(false);
         }
 
 
@@ -42,7 +42,7 @@ namespace ExFrameNet.Validation.Tests.Validators
                 .Validate(x => x.IsNotNull());
 
             //Assert
-            sut.ValidationResult.IsValid.Should().Be(true);
+            sut.Validate().IsValid.Should().Be(true);
         }
     }
 }

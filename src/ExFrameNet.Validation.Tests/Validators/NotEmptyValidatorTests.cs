@@ -25,7 +25,7 @@ namespace ExFrameNet.Validation.Tests.Validators
                 .Validate(x => x.IsNotEmpty());
 
             //Assert
-            sut.ValidationResult.IsValid.Should().Be(false);
+            sut.Validate().IsValid.Should().Be(false);
         }
 
         [Theory]
@@ -44,7 +44,7 @@ namespace ExFrameNet.Validation.Tests.Validators
                 .Validate(x => x.IsNotEmpty());
 
             //Assert
-            sut.ValidationResult.IsValid.Should().Be(true);
+            sut.Validate().IsValid.Should().Be(true);
         }
 
         public static IEnumerable<object[]> NotEmptyFailsData()

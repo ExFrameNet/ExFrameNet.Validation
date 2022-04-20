@@ -6,12 +6,18 @@ namespace ExFrameNet.Validation
         where T : class
     {
 
-        public ValidationResult ValidationResult { get; set; }
+        private readonly ValidationContext<T,TProperty> _context;
 
-        internal ValidationPropertyContext(PropertyContext<T, TProperty> ctx, ValidationResult result)
+        internal ValidationPropertyContext(PropertyContext<T, TProperty> ctx, ValidationContext<T,TProperty> validationContext)
             : base(ctx)
         {
-            ValidationResult = result;
+            _context = validationContext;
+        }
+
+
+        public ValidationResult Validate()
+        {
+            return _context.Validate();
         }
 
     }

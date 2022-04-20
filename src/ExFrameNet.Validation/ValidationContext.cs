@@ -5,22 +5,27 @@ namespace ExFrameNet.Validation
 {
     public class ValidationContext
     {
+        private List<ValidationError> _errors = new List<ValidationError>();
         internal ValidationContext? InnerContext { get; set; }
         internal PropertyContext Property { get; }
 
         internal List<IValidator> Validators { get; }
         internal IValidator? LastValidator => Validators.LastOrDefault();
         internal Dictionary<IValidator, ValidatorAttachments> ValidatorAttachments { get; }
+        
+        public ValidationOptions ValidationOptions { get; }
 
-        internal ValidationContext(PropertyContext property)
+        internal ValidationContext(PropertyContext property, ValidationOptions options)
         {
             Validators = new List<IValidator>();
             ValidatorAttachments = new Dictionary<IValidator, ValidatorAttachments>();
             Property = property;
+            ValidationOptions = options;
         }
 
-        internal  ValidationResult Validate(ValidationOptions options, List<ValidationError> errors)
+        internal  ValidationResult Validate()
         {
+            _errors.Clear();
             var value = Property.Value;
             var breaked = false;
             foreach (var validator in Validators)
@@ -37,9 +42,9 @@ namespace ExFrameNet.Validation
                 var msg = MessageFormatter.Fromat(attachments.Message, validator.MessageParameters);
                 var error = new ValidationError(msg, attachments.ErrorCode, value,
                     attachments.Severity, attachments.CustomError);
-                errors.Add(error);
+                _errors.Add(error);
 
-                if (options.BreakAfterFirstFail || validator.BreaksValidationIfFaild)
+                if (ValidationOptions.BreakAfterFirstFail || validator.BreaksValidationIfFaild)
                 {
                     breaked = true;
                     break;
@@ -48,9 +53,12 @@ namespace ExFrameNet.Validation
             }
 
             if (InnerContext is not null && !breaked)
-                InnerContext.Validate(options, errors);
+            {
+                var innerresult = InnerContext.Validate();
+                _errors.AddRange(innerresult.Errors);
+            }
 
-            return new ValidationResult(Property.Name, errors);
+            return new ValidationResult(Property.Name, _errors);
         }
 
 
@@ -64,8 +72,8 @@ namespace ExFrameNet.Validation
         
         
 
-        internal ValidationContext(PropertyContext<T, TProperty> property)
-            :base(property)
+        internal ValidationContext(PropertyContext<T, TProperty> property, ValidationOptions options)
+            :base(property, options)
         {
             Property = property;
         }

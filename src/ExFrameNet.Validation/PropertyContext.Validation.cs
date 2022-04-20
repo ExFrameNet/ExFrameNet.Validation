@@ -15,31 +15,28 @@ namespace ExFrameNet.Validation
                 options = ValidationOptions.Default;
 
 
-            var valCtx = new ValidationContext<T, TProperty>(ctx);
+            var valCtx = new ValidationContext<T, TProperty>(ctx, options);
             validation(valCtx);
 
-            var result = valCtx.Validate(options, new List<ValidationError>());
-            if(typeof(T).IsAssignableTo(typeof(IValidatable)))
-                IValidtableActions(ctx, result);
-
-            return new ValidationPropertyContext<T, TProperty>(ctx, result);
+            return new ValidationPropertyContext<T, TProperty>(ctx, valCtx);
         }
 
         public static ValidationPropertyChangedContext<T, TProperty> Validate<T, TProperty>
             (this PropertyChangedContext<T, TProperty> ctx, Action<ValidationContext<T, TProperty>> validation, ValidationOptions? options = null)
-            where T : class, INotifyPropertyChanged, IValidatable
+            where T : class, INotifyPropertyChanged
         {
             if (options is null)
                 options = ValidationOptions.Default;
 
-            var valCtx = new ValidationContext<T, TProperty>(ctx);
+            var valCtx = new ValidationContext<T, TProperty>(ctx, options);
             validation(valCtx);
             var newCtx = new ValidationPropertyChangedContext<T, TProperty>(ctx);
 
             ctx.Subscribe(x =>
             {
-                var result = valCtx.Validate(options, new List<ValidationError>());
-                IValidtableActions(ctx,result);
+                var result = valCtx.Validate();
+                if(typeof(T).IsAssignableTo(typeof(IValidatable)))
+                    IValidtableActions(valCtx, result);
                 foreach (var action in newCtx.AfterValidationActions)
                 {
                     action(result);
@@ -49,19 +46,23 @@ namespace ExFrameNet.Validation
             return newCtx;
         }
 
-        private static void IValidtableActions<T,TProperty>(PropertyContext<T,TProperty> ctx, ValidationResult result)
+        private static void IValidtableActions<T,TProperty>(ValidationContext<T,TProperty> ctx, ValidationResult? result)
             where T : class
         {
-            var instance = (IValidatable)ctx.ClassInstance;
+            if (result is null)
+                result = ctx.Validate();
+
+            var instance = (IValidatable)ctx.Property.ClassInstance;
             if (result.IsValid)
             {
-                instance.Validproperties.Add(ctx.Name);
+                instance.Validproperties.Add(ctx.Property.Name);
             }
             else
             {
-                instance.Validproperties.Remove(ctx.Name);
+                instance.Validproperties.Remove(ctx.Property.Name);
             }
             instance.OnPropertyValidated(result);
+            instance.ValidationContexts.Add(ctx);
         }
 
     }

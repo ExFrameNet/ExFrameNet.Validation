@@ -26,7 +26,7 @@ namespace ExFrameNet.Validation.Tests.Validators
 
 
             //Assert
-            sut.ValidationResult.IsValid.Should().BeFalse();
+            sut.Validate().IsValid.Should().BeFalse();
 
         }
 
@@ -46,7 +46,7 @@ namespace ExFrameNet.Validation.Tests.Validators
 
 
             //Assert
-            sut.ValidationResult.IsValid.Should().BeTrue();
+            sut.Validate().IsValid.Should().BeTrue();
 
         }
     }

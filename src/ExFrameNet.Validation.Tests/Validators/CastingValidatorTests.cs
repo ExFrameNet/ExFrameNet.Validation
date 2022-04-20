@@ -26,7 +26,7 @@ namespace ExFrameNet.Validation.Tests.Validators
                 .Validate(x => x.CastTo<ITestEnv,string,int>());
 
             //Assert
-            sut.ValidationResult.IsValid.Should().Be(false);
+            sut.Validate().IsValid.Should().Be(false);
             
         }
 
@@ -44,7 +44,7 @@ namespace ExFrameNet.Validation.Tests.Validators
                 mock.Object.Property(x => x.StringProp)
                 .Validate(x => x.CastTo<ITestEnv, string, int>());
 
-            sut.ValidationResult.IsValid.Should().Be(true);
+            sut.Validate().IsValid.Should().Be(true);
 
         }
 

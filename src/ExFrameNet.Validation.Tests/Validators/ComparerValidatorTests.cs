@@ -25,7 +25,7 @@ namespace ExFrameNet.Validation.Tests.Validators
                 .Validate(x => x.IsGreaterThen(comparision));
             //Assert
 
-            sut.ValidationResult.IsValid.Should().Be(expected);
+            sut.Validate().IsValid.Should().Be(expected);
         }
     }
 }
