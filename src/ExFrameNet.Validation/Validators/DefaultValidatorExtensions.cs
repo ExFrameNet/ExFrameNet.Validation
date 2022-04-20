@@ -1,4 +1,5 @@
-﻿using ExFrameNet.Validation.Tests.Validators;
+﻿using ExFrame.Extensions.Property;
+using ExFrameNet.Validation.Tests.Validators;
 
 namespace ExFrameNet.Validation.Validators
 {
@@ -22,18 +23,18 @@ namespace ExFrameNet.Validation.Validators
             where T : class
         {
             ctx.AddValidator(new CastingValidator<TProperty, TCasted>());
-            TCasted? transform(T c) => (TCasted?)Convert.ChangeType(ctx.PropertyReader(c), typeof(TCasted?));
+            TCasted transform(TProperty p) => (TCasted)Convert.ChangeType(p, typeof(TCasted));
+            var newCtx = new ValidationContext<T, TCasted>(ctx.Property.Transform(transform));
+            ctx.InnerContext = newCtx;
 
-            return new ValidationContext<T, TCasted>(ctx.Validators, transform , ctx.ClassInstance);
+            return newCtx;
         }
 
         public static ValidationContext<T, TCasted> Cast<T, TProperty, TCasted>(this ValidationContext<T, TProperty> ctx, Func<TProperty, TCasted> cast)
             where T : class
         {
-            ctx.AddValidator(new CastingFunctionValidator<TProperty, TCasted>(cast));
-            TCasted transform(T c) => cast(ctx.PropertyReader(c));
-
-            return new ValidationContext<T, TCasted>(ctx.Validators, transform, ctx.ClassInstance);
+            ctx.AddValidator(new CastingValidator<TProperty, TCasted>(cast));
+            return new ValidationContext<T, TCasted>(ctx.Property.Transform(cast));
         }
 
         public static ValidationContext<T,string> ShouldNotContain<T>(this ValidationContext<T,string> ctx, string substring)

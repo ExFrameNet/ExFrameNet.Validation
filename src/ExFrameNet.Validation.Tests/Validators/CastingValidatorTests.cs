@@ -1,4 +1,5 @@
 ﻿using ExFrame.Extensions.Property;
+using ExFrameNet.Validation.Tests.mock;
 using ExFrameNet.Validation.Validators;
 using FluentAssertions;
 using Moq;
@@ -33,7 +34,6 @@ namespace ExFrameNet.Validation.Tests.Validators
         public void CastingValidator_Passes_IfCanCast()
         {
             //Arrange
-            //Arrange
             var mock = new Mock<ITestEnv>();
 
             mock.SetupGet(x => x.Validproperties).Returns(new HashSet<string>());
@@ -46,6 +46,24 @@ namespace ExFrameNet.Validation.Tests.Validators
 
             sut.ValidationResult.IsValid.Should().Be(true);
 
+        }
+
+        [Fact]
+        public void CastingValidator_Should_ReturnCastedValue()
+        {
+            var mock = new Mock<ITestEnv>();
+
+            mock.SetupGet(x => x.Validproperties).Returns(new HashSet<string>());
+            mock.SetupGet(x => x.StringProp).Returns("15");
+
+            //Act
+            var sut = new CastedDummy<int>();
+            var test =
+                mock.Object.Property(x => x.StringProp)
+                .Validate(x => x.CastTo<ITestEnv, string, int>()
+                .AddValidator(sut));
+
+            sut.Value.Should().Be(15);
         }
     }
 }

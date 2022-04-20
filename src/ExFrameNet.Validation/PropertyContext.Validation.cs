@@ -15,9 +15,10 @@ namespace ExFrameNet.Validation
                 options = ValidationOptions.Default;
 
 
-            var valCtx = new ValidationContext<T, TProperty>(ctx.PropertyReader, ctx.ClassInstance);
+            var valCtx = new ValidationContext<T, TProperty>(ctx);
             validation(valCtx);
-            var result = valCtx.Validate(options, ctx.Name);
+
+            var result = valCtx.Validate(options, new List<ValidationError>());
             IValiudatbaleActions(ctx, result);
 
             return new ValidationPropertyContext<T, TProperty>(ctx, result);
@@ -30,13 +31,13 @@ namespace ExFrameNet.Validation
             if (options is null)
                 options = ValidationOptions.Default;
 
-            var valCtx = new ValidationContext<T, TProperty>(ctx.PropertyReader, ctx.ClassInstance);
+            var valCtx = new ValidationContext<T, TProperty>(ctx);
             validation(valCtx);
             var newCtx = new ValidationPropertyChangedContext<T, TProperty>(ctx);
 
             ctx.Subscribe(x =>
             {
-                var result = valCtx.Validate(options, ctx.Name);
+                var result = valCtx.Validate(options, new List<ValidationError>());
                 IValiudatbaleActions(ctx,result);
                 foreach (var action in newCtx.AfterValidationActions)
                 {
