@@ -2,7 +2,7 @@
 {
     public class NotNullValidator<T> : AbstractValidator<T>
     {
-        public override string DefaultMessage => "Value can't be null";
+        public override string DefaultMessage => "{propertyName} can't be null";
         public override uint DefaultErrorCode => 0;
 
         public override bool BreaksValidationIfFaild => false;

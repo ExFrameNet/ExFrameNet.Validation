@@ -34,13 +34,22 @@ namespace ExFrameNet.Validation
 
         internal ValidationResult Validate(ValidationOptions options, string propertyName)
         {
+            var templateDic = new Dictionary<string, object>()
+            {
+                {"value", PropertyReader(ClassInstance) },
+                {"propertyName", propertyName},
+            };
             var errors = new List<ValidationError>();
             foreach (var validator in Validators)
             {
                 var attempted = PropertyReader(ClassInstance);
-                bool isValid = false;
-                if (validator is IParameterizedValidator<TProperty> pvalidator && ValidatorParameters.TryGetValue(pvalidator, out var param))
+                bool isValid;
+                if (validator is IParameterizedValidator<TProperty> pvalidator && 
+                        ValidatorParameters.TryGetValue(pvalidator, out var param))
+                {
+                    templateDic.Add("parameter", param);
                     isValid = pvalidator.Validate(attempted, param);
+                }
                 else
                     isValid = validator.Validate(attempted);
 
@@ -48,7 +57,8 @@ namespace ExFrameNet.Validation
                     continue;
 
                 var attachments = ValidatorAttachments[validator];
-                var error = new ValidationError(attachments.Message, attachments.ErrorCode, attempted,
+                var msg = MessageFormatter.Fromat(attachments.Message, templateDic);
+                var error = new ValidationError(msg, attachments.ErrorCode, attempted,
                     attachments.Severity, attachments.CustomError);
                 errors.Add(error);
                 if (options.BreakAfterFirstFail || validator.BreaksValidationIfFaild)

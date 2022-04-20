@@ -4,7 +4,7 @@ namespace ExFrameNet.Validation.Validators
 {
     public class CastingValidator<T, TTo> : AbstractValidator<T>
     {
-        public override string DefaultMessage => "Value can't be casted to { parameter }";
+        public override string DefaultMessage => $"Value can't be casted to {typeof(TTo)}";
         public override uint DefaultErrorCode => 0;
         public override bool BreaksValidationIfFaild => true;
 

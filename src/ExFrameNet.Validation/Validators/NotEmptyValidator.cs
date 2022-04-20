@@ -4,7 +4,7 @@ namespace ExFrameNet.Validation.Validators
 {
     public class NotEmptyValidator<T> : AbstractValidator<T>
     {
-        public override string DefaultMessage => "Value can't be empty";
+        public override string DefaultMessage => "{propertyName} can't be empty";
         public override uint DefaultErrorCode { get; }
         public override bool BreaksValidationIfFaild => false;
 
