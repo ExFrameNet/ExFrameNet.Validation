@@ -31,12 +31,23 @@
                 throw new ArgumentNullException(nameof(parameter));
 
             if (ctx.LastValidator is null)
-                throw new InvalidOperationException("Add Validator first");
+                throw new InvalidOperationException("Validator must be addded first");
 
             if (ctx.LastValidator is not IParameterizedValidator<TProperty, TParameter> validator)
                 throw new InvalidOperationException("Validator didn't except a parameter or this type of Parameter");
 
             ctx.ValidatorParameters[validator] = parameter;
+
+            return ctx;
+        }
+
+        public static ValidationContext<T,TProperty> AddMessageParameter<T,TProperty>(this ValidationContext<T,TProperty> ctx, string key, object? value)
+            where T : class
+        {
+            if(ctx.LastValidator is null)
+                throw new InvalidOperationException("Validator must be addded first");
+
+            ctx.LastValidator.MessageParameters.Add(key, value);
 
             return ctx;
         }

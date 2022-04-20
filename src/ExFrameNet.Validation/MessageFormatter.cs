@@ -6,7 +6,7 @@ namespace ExFrameNet.Validation
     {
         private static readonly Regex _templateRegex = new Regex("{([^{}:]+)(?::([^{}]+))?}", RegexOptions.Compiled);
 
-        public static string Fromat(string messageWithTemplate, Dictionary<string, object> keyValues)
+        public static string Fromat(string messageWithTemplate, Dictionary<string, object?> keyValues)
         {
             return _templateRegex.Replace(messageWithTemplate, m =>
                 {

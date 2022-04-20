@@ -7,7 +7,7 @@
 
     public interface IParameterizedValidator<T, TParameter> : IParameterizedValidator<T>
     {
-        bool Validate(T? value, TParameter parameter);
+        bool Validate(T value, TParameter parameter);
     }
 
 

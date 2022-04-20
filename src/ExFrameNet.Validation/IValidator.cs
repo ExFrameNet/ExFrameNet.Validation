@@ -1,12 +1,15 @@
 ﻿using System.ComponentModel;
-
+using System.Security;
 
 namespace ExFrameNet.Validation
 {
     [EditorBrowsable(EditorBrowsableState.Never)]
     public interface IValidator
     {
+        Dictionary<string, object?> MessageParameters { get; }
         bool BreaksValidationIfFaild { get; }
+
+        bool PassesWhenNull { get; set; }
 
         bool Validate(object? value);
 
@@ -17,6 +20,6 @@ namespace ExFrameNet.Validation
 
     public interface IValidator<T> : IValidator
     {
-        bool Validate(T? value);
+        bool Validate(T value);
     }
 }
