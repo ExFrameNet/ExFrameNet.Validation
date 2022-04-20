@@ -45,5 +45,31 @@ namespace ExFrameNet.Validation.Validators
 
             return ctx;
         }
+
+        public static ValidationContext<T,string> Lenght<T>(this ValidationContext<T,string> ctx, uint min, uint max)
+            where T : class
+        {
+            ctx.AddValidator(new LengthValidator())
+                .WithParameter((min, max));
+            return ctx;
+        }
+
+        public static ValidationContext<T,string> MinLength<T>(this ValidationContext<T,string> ctx, uint min)
+            where T : class
+        {
+            ctx.AddValidator(new LengthValidator())
+                .WithParameter((min, uint.MaxValue));
+               
+            return ctx;
+        }
+
+        public static ValidationContext<T, string> MaxLength<T>(this ValidationContext<T, string> ctx, uint max)
+            where T : class
+        {
+            ctx.AddValidator(new LengthValidator())
+                .WithParameter((uint.MinValue, max));
+
+            return ctx;
+        }
     }
 }
