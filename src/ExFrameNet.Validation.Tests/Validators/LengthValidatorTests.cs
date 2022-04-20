@@ -16,6 +16,7 @@ namespace ExFrameNet.Validation.Tests.Validators
         [InlineData("123",3,15, true)]
         [InlineData("123",2,15, true)]
         [InlineData("123",4,15, false)]
+        [InlineData(null,5,15, true)]
         public void LengthValidator_Shloud_ValidateLength(string value, uint min, uint max, bool expectedResult)
         {
 

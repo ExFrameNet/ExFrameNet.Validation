@@ -7,6 +7,11 @@
 
         public override bool BreaksValidationIfFaild => false;
 
+        public NotNullValidator()
+        {
+            PassesWhenNull = false;
+        }
+
         public override bool Validate(T? value)
         {
             return value is not null;

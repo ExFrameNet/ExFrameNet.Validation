@@ -51,5 +51,16 @@
 
             return ctx;
         }
+
+        public static ValidationContext<T, TProperty> PassesWhenNull<T, TProperty>(this ValidationContext<T, TProperty> ctx, bool value)
+            where T : class
+        {
+            if (ctx.LastValidator is null)
+                throw new InvalidOperationException("Validator must be addded first");
+
+            ctx.LastValidator.PassesWhenNull = value;
+
+            return ctx;
+        }
     }
 }
