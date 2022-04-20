@@ -67,5 +67,13 @@ namespace ExFrameNet.Validation.Validators
 
             return ctx;
         }
+
+        public static ValidationContext<T,TProperty> IsGreaterThen<T,TProperty>(this ValidationContext<T,TProperty> ctx, TProperty value)
+            where T : class
+            where TProperty : IComparable<TProperty>
+        {
+            ctx.AddValidator(new GreaterThenValidator<TProperty>(value));
+            return ctx;
+        }
     }
 }

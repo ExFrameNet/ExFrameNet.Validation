@@ -9,7 +9,7 @@ namespace ExFrameNet.Validation
 
         public static ValidationPropertyContext<T, TProperty> Validate<T, TProperty>
             (this PropertyContext<T, TProperty> ctx, Action<ValidationContext<T, TProperty>> validation, ValidationOptions? options = null)
-            where T : class, IValidatable
+            where T : class
         {
             if (options is null)
                 options = ValidationOptions.Default;
@@ -19,7 +19,8 @@ namespace ExFrameNet.Validation
             validation(valCtx);
 
             var result = valCtx.Validate(options, new List<ValidationError>());
-            IValiudatbaleActions(ctx, result);
+            if(typeof(T).IsAssignableTo(typeof(IValidatable)))
+                IValidtableActions(ctx, result);
 
             return new ValidationPropertyContext<T, TProperty>(ctx, result);
         }
@@ -38,7 +39,7 @@ namespace ExFrameNet.Validation
             ctx.Subscribe(x =>
             {
                 var result = valCtx.Validate(options, new List<ValidationError>());
-                IValiudatbaleActions(ctx,result);
+                IValidtableActions(ctx,result);
                 foreach (var action in newCtx.AfterValidationActions)
                 {
                     action(result);
@@ -48,18 +49,19 @@ namespace ExFrameNet.Validation
             return newCtx;
         }
 
-        private static void IValiudatbaleActions<T,TProperty>(PropertyContext<T,TProperty> ctx, ValidationResult result)
-            where T :class, IValidatable
+        private static void IValidtableActions<T,TProperty>(PropertyContext<T,TProperty> ctx, ValidationResult result)
+            where T : class
         {
+            var instance = (IValidatable)ctx.ClassInstance;
             if (result.IsValid)
             {
-                ctx.ClassInstance.Validproperties.Add(ctx.Name);
+                instance.Validproperties.Add(ctx.Name);
             }
             else
             {
-                ctx.ClassInstance.Validproperties.Remove(ctx.Name);
+                instance.Validproperties.Remove(ctx.Name);
             }
-            ctx.ClassInstance.OnPropertyValidated(result);
+            instance.OnPropertyValidated(result);
         }
 
     }
