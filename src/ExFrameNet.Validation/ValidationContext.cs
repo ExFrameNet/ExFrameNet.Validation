@@ -1,33 +1,25 @@
 ﻿using ExFrameNet.Utils.Property;
+using System.ComponentModel;
 
 namespace ExFrameNet.Validation
 {
-    public abstract class ValidationContext
+    public class ValidationContext
     {
-        internal abstract ValidationContext? InnerContext { get; set; }
-        internal abstract PropertyContext PropertyContext { get; }
-        internal abstract ValidationResult Validate(ValidationOptions options, List<ValidationError> errors);
+        internal ValidationContext? InnerContext { get; set; }
+        internal PropertyContext Property { get; }
 
-    }
-
-    public class ValidationContext<T, TProperty> : ValidationContext
-        where T : class
-    {
-        internal PropertyContext<T,TProperty> Property { get; }
         internal List<IValidator> Validators { get; }
         internal IValidator? LastValidator => Validators.LastOrDefault();
         internal Dictionary<IValidator, ValidatorAttachments> ValidatorAttachments { get; }
-        internal override ValidationContext? InnerContext { get; set; }
-        internal override PropertyContext PropertyContext => PropertyContext;
 
-        internal ValidationContext(PropertyContext<T,TProperty> property)
+        internal ValidationContext(PropertyContext property)
         {
             Validators = new List<IValidator>();
             ValidatorAttachments = new Dictionary<IValidator, ValidatorAttachments>();
             Property = property;
         }
 
-        internal override ValidationResult Validate(ValidationOptions options, List<ValidationError> errors)
+        internal  ValidationResult Validate(ValidationOptions options, List<ValidationError> errors)
         {
             var value = Property.Value;
             var breaked = false;
@@ -35,8 +27,8 @@ namespace ExFrameNet.Validation
             {
                 validator.MessageParameters.Add("propertyname", Property.Name);
 
-               
-               var isValid = validator.Validate(value);
+
+                var isValid = validator.Validate(value);
 
                 if (isValid)
                     continue;
@@ -59,6 +51,23 @@ namespace ExFrameNet.Validation
                 InnerContext.Validate(options, errors);
 
             return new ValidationResult(Property.Name, errors);
+        }
+
+
+
+    }
+
+    public class ValidationContext<T, TProperty> : ValidationContext
+        where T : class
+    {
+        internal new PropertyContext<T, TProperty> Property { get; }
+        
+        
+
+        internal ValidationContext(PropertyContext<T, TProperty> property)
+            :base(property)
+        {
+            Property = property;
         }
     }
 }
