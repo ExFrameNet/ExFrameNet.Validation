@@ -1,4 +1,4 @@
-﻿using ExFrame.Extensions.Property;
+﻿using ExFrameNet.Utils.Property;
 using ExFrameNet.Validation.Validators;
 using FluentAssertions;
 using Moq;

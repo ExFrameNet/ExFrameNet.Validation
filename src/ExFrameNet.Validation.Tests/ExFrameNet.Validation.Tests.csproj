@@ -28,7 +28,7 @@
 
   <ItemGroup>
     <Reference Include="ExFrameNet.Utils">
-      <HintPath>..\..\..\Utils\src\ExFrameNet.Utils\bin\Debug\net6.0\ExFrameNet.Utils.dll</HintPath>
+      <HintPath>..\..\..\Utils\src\ExFrameNet.Utils\bin\Release\net6.0\ExFrameNet.Utils.dll</HintPath>
     </Reference>
   </ItemGroup>
 

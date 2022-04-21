@@ -19,22 +19,16 @@ namespace ExFrameNet.Validation.Validators
             return ctx;
         }
 
-        public static ValidationContext<T,TCasted> CastTo<T,TProperty,TCasted>(this ValidationContext<T,TProperty> ctx)
+        public static ValidationContext<T,TProperty> CanBeCastedTo<T,TProperty, TCasted>(this ValidationContext<T,TProperty> ctx)
             where T : class
         {
-            ctx.AddValidator(new CastingValidator<TProperty, TCasted>());
-            TCasted transform(TProperty p) => (TCasted)Convert.ChangeType(p, typeof(TCasted));
-            var newCtx = new ValidationContext<T, TCasted>(ctx.Property.Transform(transform), ctx.ValidationOptions);
-            ctx.InnerContext = newCtx;
-
-            return newCtx;
+            return ctx.AddValidator(new CastingValidator<TProperty, TCasted>());
         }
 
-        public static ValidationContext<T, TCasted> Cast<T, TProperty, TCasted>(this ValidationContext<T, TProperty> ctx, Func<TProperty, TCasted> cast)
+        public static ValidationContext<T, TProperty> CanBeCastedBy<T, TProperty, TCasted>(this ValidationContext<T, TProperty> ctx, Func<TProperty, TCasted> cast)
             where T : class
         {
-            ctx.AddValidator(new CastingValidator<TProperty, TCasted>(cast));
-            return new ValidationContext<T, TCasted>(ctx.Property.Transform(cast), ctx.ValidationOptions);
+            return ctx.AddValidator(new CastingValidator<TProperty, TCasted>(cast));
         }
 
         public static ValidationContext<T,string> ShouldNotContain<T>(this ValidationContext<T,string> ctx, string substring)

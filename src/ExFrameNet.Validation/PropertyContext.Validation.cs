@@ -62,7 +62,6 @@ namespace ExFrameNet.Validation
                 instance.Validproperties.Remove(ctx.Property.Name);
             }
             instance.OnPropertyValidated(result);
-            instance.ValidationContexts.Add(ctx);
         }
 
     }

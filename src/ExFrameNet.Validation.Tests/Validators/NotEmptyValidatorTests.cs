@@ -1,9 +1,9 @@
 ﻿using Moq;
 using System.Collections.Generic;
 using Xunit;
-using ExFrame.Extensions.Property;
 using ExFrameNet.Validation.Validators;
 using FluentAssertions;
+using ExFrameNet.Utils.Property;
 
 namespace ExFrameNet.Validation.Tests.Validators
 {

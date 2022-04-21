@@ -1,4 +1,4 @@
-﻿using ExFrame.Extensions.Property;
+﻿using ExFrameNet.Utils.Property;
 using ExFrameNet.Validation.Tests.mock;
 using ExFrameNet.Validation.Validators;
 using FluentAssertions;
@@ -23,7 +23,7 @@ namespace ExFrameNet.Validation.Tests.Validators
             //Act
             var sut =
                 mock.Object.Property(x => x.StringProp)
-                .Validate(x => x.CastTo<ITestEnv,string,int>());
+                .Validate(x => x.CanBeCastedTo<ITestEnv,string,int>());
 
             //Assert
             sut.Validate().IsValid.Should().Be(false);
@@ -42,7 +42,7 @@ namespace ExFrameNet.Validation.Tests.Validators
             //Act
             var sut =
                 mock.Object.Property(x => x.StringProp)
-                .Validate(x => x.CastTo<ITestEnv, string, int>());
+                .Validate(x => x.CanBeCastedTo<ITestEnv, string, int>());
 
             sut.Validate().IsValid.Should().Be(true);
 
@@ -57,13 +57,15 @@ namespace ExFrameNet.Validation.Tests.Validators
             mock.SetupGet(x => x.StringProp).Returns("15");
 
             //Act
-            var sut = new CastedDummy<int>();
-            var test =
+            var dummyValidator = new CastedDummy<int>();
+            var sut =
                 mock.Object.Property(x => x.StringProp)
-                .Validate(x => x.CastTo<ITestEnv, string, int>()
-                .AddValidator(sut));
+                .Validate(x => x.CanBeCastedTo<ITestEnv, string, int>())
+                .Transform(x => int.Parse(x))
+                .Validate(x => x.AddValidator(dummyValidator));
 
-            sut.Value.Should().Be(15);
+            sut.Validate();
+            dummyValidator.Value.Should().Be(15);
         }
     }
 }
