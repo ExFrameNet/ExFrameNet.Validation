@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExFrameNet.Validation", "sr
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{520AEB27-C693-464E-AF50-342463AA367A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExFrameNet.Validation.Tests", "src\ExFrameNet.Validation.Tests\ExFrameNet.Validation.Tests.csproj", "{9185DC43-7094-47AE-AE31-0E50E77C95E8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExFrameNet.Validation.Tests", "src\ExFrameNet.Validation.Tests\ExFrameNet.Validation.Tests.csproj", "{9185DC43-7094-47AE-AE31-0E50E77C95E8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

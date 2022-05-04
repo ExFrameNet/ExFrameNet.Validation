@@ -1,15 +1,24 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <Reference Include="ExFrameNet.Utils">
-      <HintPath>..\..\..\Utils\src\ExFrameNet.Utils\bin\Debug\net6.0\ExFrameNet.Utils.dll</HintPath>
-    </Reference>
-  </ItemGroup>
+	<PropertyGroup>
+		<Copyright>Copyright © Yannick Schrade 2022. All rights reserved.</Copyright>
+		<RepositoryUrl>https://github.com/ExFrameNet/ExFrameNet.Validation</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<PackageTags>Validation</PackageTags>
+		<Company>ExFrameNet</Company>
+		<Authors>yannickschrade</Authors>
+		<Description>Easy to use Fluent Validation</Description>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="ExFrameNet.Utils" Version="0.1.0" />
+	</ItemGroup>
 
 </Project>
