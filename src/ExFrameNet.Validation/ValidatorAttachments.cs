@@ -1,18 +1,17 @@
-﻿namespace ExFrameNet.Validation
+﻿namespace ExFrameNet.Validation;
+
+internal class ValidatorAttachments
 {
-    internal class ValidatorAttachments
+
+
+    public string Message { get; set; }
+    public uint ErrorCode { get; set; }
+    public object? CustomError { get; set; }
+    public Severity Severity { get; set; } = Severity.Error;
+
+    public ValidatorAttachments(string message, uint errorCode)
     {
-        
-
-        public string Message { get; set; }
-        public uint ErrorCode { get; set; }
-        public object? CustomError { get; set; }
-        public Severity Severity { get; set; } = Severity.Error;
-
-        public ValidatorAttachments(string message, uint errorCode)
-        {
-            Message = message;
-            ErrorCode = errorCode;
-        }
+        Message = message;
+        ErrorCode = errorCode;
     }
 }

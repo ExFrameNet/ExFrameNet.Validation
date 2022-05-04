@@ -1,9 +1,8 @@
-﻿namespace ExFrameNet.Validation
-{
-    public interface IValidatable
-    {
-        HashSet<string> Validproperties { get; }
+﻿namespace ExFrameNet.Validation;
 
-        void OnPropertyValidated(ValidationResult result);
-    }
+public interface IValidatable
+{
+    HashSet<string> Validproperties { get; }
+
+    void OnPropertyValidated(ValidationResult result);
 }

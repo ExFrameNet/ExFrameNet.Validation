@@ -1,27 +1,28 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace ExFrameNet.Validation
+namespace ExFrameNet.Validation;
+
+internal static class MessageFormatter
 {
-    internal static class MessageFormatter
+    private static readonly Regex _templateRegex = new Regex("{([^{}:]+)(?::([^{}]+))?}", RegexOptions.Compiled);
+
+    public static string Fromat(string messageWithTemplate, Dictionary<string, object?> keyValues)
     {
-        private static readonly Regex _templateRegex = new Regex("{([^{}:]+)(?::([^{}]+))?}", RegexOptions.Compiled);
+        return _templateRegex.Replace(messageWithTemplate, m =>
+            {
+                string? key = m.Groups[1].Value;
 
-        public static string Fromat(string messageWithTemplate, Dictionary<string, object?> keyValues)
-        {
-            return _templateRegex.Replace(messageWithTemplate, m =>
+                if (!keyValues.TryGetValue(key, out object? value))
                 {
-                    var key = m.Groups[1].Value;
+                    return m.Value;
+                }
 
-                    if (!keyValues.TryGetValue(key, out var value))
-                        return m.Value;
-
-                    var format = m.Groups[2].Success
-                            ? $"{{0:{m.Groups[2].Value}}}"
-                            : null;
-                    return format is null
-                        ? value.ToString()
-                        : string.Format(format, value);
-                });
-        }
+                string? format = m.Groups[2].Success
+                        ? $"{{0:{m.Groups[2].Value}}}"
+                        : null;
+                return format is null
+                    ? value.ToString()
+                    : string.Format(format, value);
+            });
     }
 }

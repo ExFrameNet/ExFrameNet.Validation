@@ -1,48 +1,47 @@
-﻿using Moq;
-using System.Collections.Generic;
-using Xunit;
+﻿using ExFrameNet.Utils.Property;
 using ExFrameNet.Validation.Validators;
 using FluentAssertions;
-using ExFrameNet.Utils.Property;
+using Moq;
+using System.Collections.Generic;
+using Xunit;
 
-namespace ExFrameNet.Validation.Tests.Validators
+namespace ExFrameNet.Validation.Tests.Validators;
+
+public class NotNullValidatorTests
 {
-    public class NotNullValidatorTests
+    [Fact]
+    public void NotNullValidator_Fails_IfPropertyIsNull()
     {
-        [Fact]
-        public void NotNullValidator_Fails_IfPropertyIsNull()
-        {
-            //Arrange
-            var mock = new Mock<ITestEnv>();
+        //Arrange
+        Mock<ITestEnv>? mock = new Mock<ITestEnv>();
 
-            mock.SetupGet(x => x.Validproperties).Returns(new HashSet<string>());
+        mock.SetupGet(x => x.Validproperties).Returns(new HashSet<string>());
 
-            //Act
-            var sut =
-                mock.Object.Property(x => x.StringProp)
-                .Validate(x => x.IsNotNull());
+        //Act
+        var sut =
+            mock.Object.Property(x => x.StringProp)
+            .Validate(x => x.IsNotNull());
 
-            //Assert
-            sut.Validate().IsValid.Should().Be(false);
-        }
+        //Assert
+        sut.Validate().IsValid.Should().Be(false);
+    }
 
 
-        [Fact]
-        public void NotNullValidator_Passes_IfPropertyIsNotNull()
-        {
-            //Arrange
-            var mock = new Mock<ITestEnv>();
+    [Fact]
+    public void NotNullValidator_Passes_IfPropertyIsNotNull()
+    {
+        //Arrange
+        Mock<ITestEnv>? mock = new Mock<ITestEnv>();
 
-            mock.SetupGet(x => x.Validproperties).Returns(new HashSet<string>());
-            mock.SetupGet(x => x.StringProp).Returns("");
+        mock.SetupGet(x => x.Validproperties).Returns(new HashSet<string>());
+        mock.SetupGet(x => x.StringProp).Returns("");
 
-            //Act
-            var sut =
-                mock.Object.Property(x => x.StringProp)
-                .Validate(x => x.IsNotNull());
+        //Act
+        var sut =
+            mock.Object.Property(x => x.StringProp)
+            .Validate(x => x.IsNotNull());
 
-            //Assert
-            sut.Validate().IsValid.Should().Be(true);
-        }
+        //Assert
+        sut.Validate().IsValid.Should().Be(true);
     }
 }

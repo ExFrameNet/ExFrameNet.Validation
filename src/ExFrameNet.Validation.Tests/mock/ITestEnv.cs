@@ -1,12 +1,11 @@
-﻿namespace ExFrameNet.Validation.Tests
+﻿namespace ExFrameNet.Validation.Tests;
+
+public interface ITestEnv : IValidatable
 {
-    public interface ITestEnv : IValidatable
-    {
-        string StringProp { get; }
+    string StringProp { get; }
 
-        object ObjProp { get; }
+    object ObjProp { get; }
 
-        int IntProp { get; }
-    }
-
+    int IntProp { get; }
 }
+
